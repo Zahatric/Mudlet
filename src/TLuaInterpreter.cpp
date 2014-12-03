@@ -1188,6 +1188,27 @@ int TLuaInterpreter::feedTriggers( lua_State * L )
 }
 
 
+int TLuaInterpreter::pushToTelnet( lua_State * L )
+{
+    string luaText="";
+    if( lua_isstring( L, 1 ) )
+    {
+        luaText = lua_tostring( L, 1 );
+    }
+    else
+    {
+        lua_pushstring( L, "injectTelnet: wrong argument type" );
+        lua_error( L );
+        return 1;
+    }
+
+    Host * pHost = TLuaInterpreter::luaInterpreterMap[L];
+    QString msg(luaText.c_str());
+    pHost->mTelnet.postData(luaText.c_str());
+    return 0;
+}
+
+
 int TLuaInterpreter::isPrompt( lua_State *L )
 {
     Host * pHost = TLuaInterpreter::luaInterpreterMap[L];
@@ -10889,6 +10910,7 @@ void TLuaInterpreter::initLuaGlobals()
     lua_settable( pGlobalLua, LUA_GLOBALSINDEX );
     lua_register( pGlobalLua, "showUnzipProgress", TLuaInterpreter::showUnzipProgress );//internal function used by the package system NOT FOR USERS
     lua_register( pGlobalLua, "wait", TLuaInterpreter::Wait );
+    lua_register( pGlobalLua, "pushToTelnet", TLuaInterpreter::pushToTelnet );
     lua_register( pGlobalLua, "expandAlias", TLuaInterpreter::Send );
     lua_register( pGlobalLua, "echo", TLuaInterpreter::Echo );
     lua_register( pGlobalLua, "selectString", TLuaInterpreter::select );

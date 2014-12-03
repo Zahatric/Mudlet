@@ -228,6 +228,7 @@ public:
     static int sendTelnetChannel102( lua_State *L );
     static int isPrompt( lua_State * L );
     static int feedTriggers( lua_State * );
+    static int pushToTelnet( lua_State * );
     static int Wait( lua_State * L );
     static int Send( lua_State * L );
     static int sendRaw( lua_State * L );

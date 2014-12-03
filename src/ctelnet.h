@@ -113,6 +113,8 @@ public:
     bool              isReplaying() { return loadingReplay; }
     void              setChannel102Variables(const QString & );
 
+    void              postData(std::string);
+
 
 
 

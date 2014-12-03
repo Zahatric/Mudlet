@@ -1495,6 +1495,14 @@ void cTelnet::postData()
     }
 }
 
+void cTelnet::postData(std::string mNewMudData)
+{
+    if (mpHost->mpConsole) {
+        mpHost->mpConsole->printOnDisplay(mNewMudData);
+    }
+    QApplication::alert( mudlet::self(), 0 );
+}
+
 void cTelnet::initStreamDecompressor()
 {
     mZstream.zalloc = Z_NULL;

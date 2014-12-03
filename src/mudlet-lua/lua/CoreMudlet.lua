@@ -463,7 +463,6 @@ function expandAlias(command, print=1) end
 function feedTriggers(text) end
 
 
-
 --- Get the RGB values of the first character of the current selection.
 ---
 --- @param windowName optional
