@@ -1768,7 +1768,7 @@ void TBuffer::translateToPlainText( std::string & s )
             }
             continue;
         }
-        mMudLine.append( ch );
+        mMudLine.append( ch ); //string
         TChar c( ! mIsDefaultColor && mBold ? fgColorLightR : fgColorR,
                   ! mIsDefaultColor && mBold ? fgColorLightG : fgColorG,
                   ! mIsDefaultColor && mBold ? fgColorLightB : fgColorB,
@@ -1786,7 +1786,7 @@ void TBuffer::translateToPlainText( std::string & s )
         }
 
 
-        mMudBuffer.push_back( c );
+        mMudBuffer.push_back( c ); //deque
         msPos++;
     }
 }

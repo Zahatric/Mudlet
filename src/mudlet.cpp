@@ -992,6 +992,7 @@ bool mudlet::createLabel( Host * pHost, const QString & name, int x, int y, int 
     return false;
 }
 
+
 bool mudlet::createBuffer( Host * pHost, const QString & name )
 {
     if( ! pHost ) return false;
@@ -1517,6 +1518,26 @@ bool mudlet::echoWindow( Host * pHost, const QString & name, const QString & tex
     if( labelMap.contains( name ) )
     {
         labelMap[name]->setText( t );
+        return true;
+    }
+    else
+        return false;
+}
+
+bool mudlet::echoWindowAnsi( Host * pHost, const QString & name, const QString & text )
+{
+    QMap<QString, TConsole *> & dockWindowConsoleMap = mHostConsoleMap[pHost];
+    QString t = text;
+    if( dockWindowConsoleMap.contains( name ) )
+    {
+        string t_str = t.toStdString();
+        dockWindowConsoleMap[name]->printAsci( t_str );
+        return true;
+    }
+    QMap<QString, TLabel *> & labelMap = mHostLabelMap[pHost];
+    if( labelMap.contains( name ) )
+    {
+        // labelMap[name]->setText( t );
         return true;
     }
     else
