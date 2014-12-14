@@ -459,15 +459,17 @@ inline void TTextEdit::drawCharacters( QPainter & painter,
                                 bool isBold,
                                 bool isUnderline,
                                 bool isItalics,
+                                bool isStrikeOut,
                                 QColor & fgColor,
                                 QColor & bgColor )
 {
-    if( ( painter.font().bold() != isBold ) || ( painter.font().underline() != isUnderline ) || (painter.font().italic() != isItalics) )
+    if( ( painter.font().bold() != isBold ) || ( painter.font().underline() != isUnderline ) || (painter.font().italic() != isItalics) || (painter.font().strikeOut() != isStrikeOut))
     {
         QFont font = painter.font();
         font.setBold( isBold );
         font.setUnderline( isUnderline );
         font.setItalic( isItalics );
+        font.setStrikeOut( isStrikeOut );
 #if defined(Q_OS_MAC) || (defined(Q_OS_LINUX) && QT_VERSION >= 0x040800)
         font.setLetterSpacing(QFont::AbsoluteSpacing, mLetterSpacing);
 #endif
@@ -531,6 +533,7 @@ void TTextEdit::drawFrame( QPainter & p, const QRect & rect )
                 bool isBold = false;
                 bool isUnderline = false;
                 bool isItalics = false;
+                bool isStrikeOut = false;
                 QRect textRect = QRect( mFontWidth * i2,
                                         mFontHeight * i,
                                         mFontWidth * timeOffset,
@@ -538,7 +541,7 @@ void TTextEdit::drawFrame( QPainter & p, const QRect & rect )
                 QColor bgTime = QColor(22,22,22);
                 QColor fgTime = QColor(200,150,0);
                 drawBackground( p, textRect, bgTime );
-                drawCharacters( p, textRect, text, isBold, isUnderline, isItalics, fgTime, bgTime );
+                drawCharacters( p, textRect, text, isBold, isUnderline, isItalics, isStrikeOut, fgTime, bgTime );
                 i2+=timeOffset;
             }
             else
@@ -576,12 +579,13 @@ void TTextEdit::drawFrame( QPainter & p, const QRect & rect )
                     else
                         drawBackground( p, textRect, bgColor );
                 }
-                if( ( p.font().bold() != f.bold ) || ( p.font().underline() != f.underline ) || (p.font().italic() != f.italics) )
+                if( ( p.font().bold() != f.bold ) || ( p.font().underline() != f.underline ) || (p.font().italic() != f.italics) || (p.font().strikeOut() != f.strikeOut) )
                 {
                     QFont font = p.font();
                     font.setBold( f.bold );
                     font.setUnderline( f.underline );
                     font.setItalic( f.italics );
+                    font.setStrikeOut( f.strikeOut );
                     font.setLetterSpacing( QFont::AbsoluteSpacing, mLetterSpacing );
                     p.setFont( font );
                 }
@@ -742,6 +746,7 @@ void TTextEdit::drawForeground( QPainter & painter, const QRect & r )
                 bool isBold = false;
                 bool isUnderline = false;
                 bool isItalics = false;
+                bool isStrikeOut = false;
                 QRect textRect = QRect( mFontWidth * i2,
                                         mFontHeight * i,
                                         mFontWidth * timeOffset,
@@ -749,7 +754,7 @@ void TTextEdit::drawForeground( QPainter & painter, const QRect & r )
                 QColor bgTime = QColor(22,22,22);
                 QColor fgTime = QColor(200,150,0);
                 drawBackground( p, textRect, bgTime );
-                drawCharacters( p, textRect, text, isBold, isUnderline, isItalics, fgTime, bgTime );
+                drawCharacters( p, textRect, text, isBold, isUnderline, isItalics, isStrikeOut, fgTime, bgTime );
                 i2+=timeOffset;
             }
             else
@@ -824,7 +829,7 @@ void TTextEdit::drawForeground( QPainter & painter, const QRect & r )
                 {
                     drawBackground( p, textRect, bgColor );
                 }
-                drawCharacters( p, textRect, text, f.bold, f.underline, f.italics, fgColor, bgColor );
+                drawCharacters( p, textRect, text, f.bold, f.underline, f.italics, f.strikeOut, fgColor, bgColor );
                 i2+=delta;
             }
         }

@@ -125,6 +125,7 @@ TConsole::TConsole( Host * pH, bool isDebugConsole, QWidget * parent )
         mStandardFormat.bold = false;
         mStandardFormat.italics = false;
         mStandardFormat.underline = false;
+        mStandardFormat.strikeOut = false;
     }
     else
     {
@@ -157,6 +158,7 @@ TConsole::TConsole( Host * pH, bool isDebugConsole, QWidget * parent )
         mStandardFormat.bold = false;
         mStandardFormat.italics = false;
         mStandardFormat.underline = false;
+        mStandardFormat.strikeOut = false;
     }
     setContentsMargins(0,0,0,0);
     if( mpHost )
@@ -1234,7 +1236,8 @@ void TConsole::logger_set_text_properties( QString tags )
     case 7:
         break; //FIXME support inverse
     case 9:
-        break; //FIXME support strikethrough
+        m_LoggerfontSpecs.strikeOut = true;
+        break; 
     case 22:
         m_LoggerfontSpecs.bold = false;
         break;
@@ -1246,6 +1249,9 @@ void TConsole::logger_set_text_properties( QString tags )
         break;
     case 27:
         break; //FIXME inverse off
+    case 28:
+        m_LoggerfontSpecs.strikeOut = false;
+        break; 
     case 29:
         break; //FIXME
     case 30:
@@ -1484,6 +1490,7 @@ void TConsole::reset()
     mFormatCurrent.bold = false;
     mFormatCurrent.italics = false;
     mFormatCurrent.underline = false;
+    mFormatCurrent.strikeOut = false;
 }
 
 void TConsole::insertLink( QString text, QStringList & func, QStringList & hint, QPoint P, bool customFormat )
@@ -1656,7 +1663,8 @@ void TConsole::insertText( QString text, QPoint P )
                            mFormatCurrent.bgB,
                            mFormatCurrent.bold,
                            mFormatCurrent.italics,
-                           mFormatCurrent.underline );
+                           mFormatCurrent.underline
+                           mFormatCurrent.strikeOut );
             console->showNewLines();
             console2->showNewLines();
         }
@@ -2133,6 +2141,12 @@ void TConsole::setUnderline( bool b )
     buffer.applyUnderline( P_begin, P_end, b );
 }
 
+void TConsole::setStrikeOut( bool b )
+{
+    mFormatCurrent.strikeOut = b;
+    buffer.applyStrikeOut( P_begin, P_end, b );
+}
+
 void TConsole::setFgColor( int r, int g, int b )
 {
     mFormatCurrent.fgR = r;
@@ -2246,7 +2260,8 @@ void TConsole::echo( QString & msg )
                            mFormatCurrent.bgB,
                            mFormatCurrent.bold,
                            mFormatCurrent.italics,
-                           mFormatCurrent.underline );
+                           mFormatCurrent.underline,
+                           mFormatCurrent.strikeOut );
     }
     else
     {
@@ -2268,7 +2283,8 @@ void TConsole::print( const char * txt )
                    mFormatCurrent.bgB,
                    mFormatCurrent.bold,
                    mFormatCurrent.italics,
-                   mFormatCurrent.underline );
+                   mFormatCurrent.underline,
+                   mFormatCurrent.strikeOut );
     console->showNewLines();
     console2->showNewLines();
 }
@@ -2538,7 +2554,8 @@ void TConsole::print( QString & msg )
                     mFormatCurrent.bgB,
                     mFormatCurrent.bold,
                     mFormatCurrent.italics,
-                    mFormatCurrent.underline );
+                    mFormatCurrent.underline,
+                    mFormatCurrent.strikeOut );
     console->showNewLines();
     console2->showNewLines();
 }

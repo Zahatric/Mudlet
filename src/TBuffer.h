@@ -54,6 +54,7 @@ public:
     bool   italics;
     bool   bold;
     bool   underline;
+    bool   strikeout;
     int    link;
     bool   invers;
 };
@@ -77,7 +78,7 @@ class TBuffer
 public:
 
     TBuffer( Host * pH );
-    QPoint insert( QPoint &, QString text, int,int,int, int, int, int, bool bold, bool italics, bool underline );
+    QPoint insert( QPoint &, QString text, int,int,int, int, int, int, bool bold, bool italics, bool underline, bool strikeout );
     bool insertInLine( QPoint & cursor, QString & what, TChar & format );
     void expandLine( int y, int count, TChar & );
     int wrap( int startLine, int screenWidth, int indentSize, TChar & format );
@@ -110,6 +111,7 @@ public:
     bool deleteLines( int from, int to );
     bool applyFormat( QPoint &, QPoint &, TChar & format );
     bool applyUnderline( QPoint & P_begin, QPoint & P_end, bool bold );
+    bool applyStrikeOut( QPoint & P_begin, QPoint & P_end, bool strikeout );
     bool applyBold( QPoint & P_begin, QPoint & P_end, bool bold );
     bool applyLink( QPoint & P_begin, QPoint & P_end, QString linkText, QStringList &, QStringList & );
     bool applyItalics( QPoint & P_begin, QPoint & P_end, bool bold );
@@ -124,8 +126,8 @@ public:
     void resetFontSpecs();
     QPoint getEndPos();
     void translateToPlainText( std::string & s );
-    void append( QString & chunk, int sub_start, int sub_end, int, int, int, int, int, int, bool bold, bool italics, bool underline, int linkID=0 );
-    void appendLine( QString & chunk, int sub_start, int sub_end, int, int, int, int, int, int, bool bold, bool italics, bool underline, int linkID=0 );
+    void append( QString & chunk, int sub_start, int sub_end, int, int, int, int, int, int, bool bold, bool italics, bool underline, bool strikeout, int linkID=0 );
+    void appendLine( QString & chunk, int sub_start, int sub_end, int, int, int, int, int, int, bool bold, bool italics, bool underline, bool strikeout, int linkID=0 );
     int lookupColor( QString & s, int pos );
     void set_text_properties(int tag);
     void setWrapAt( int i ){ mWrapAt = i; }
@@ -279,6 +281,7 @@ private:
     bool              mBold;
     bool              mItalics;
     bool              mUnderline;
+    bool              mStrikeOut;
     bool              mFgColorCode;
     bool              mBgColorCode;
     int               mFgColorR;

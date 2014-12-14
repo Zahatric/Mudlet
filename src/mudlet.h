@@ -101,6 +101,7 @@ public:
    void                          setLink( Host * pHost, QString & name, QString & linkText, QStringList & linkFunction, QStringList & );
    void                          setItalics( Host *, QString & name, bool );
    void                          setUnderline( Host *, QString & name, bool );
+   void                          setStrikeOut( Host *, QString & name, bool );
    void                          setFgColor( Host *, QString & name, int, int, int );
    void                          setBgColor( Host *, QString & name, int, int, int );
    bool                          userWindowLineWrap( Host * pHost, QString & name, bool on );

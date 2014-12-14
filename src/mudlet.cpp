@@ -1077,7 +1077,7 @@ bool mudlet::setBackgroundImage( Host * pHost, QString & name, QString & path )
         return false;
 }
 
-bool mudlet::setTextFormat( Host * pHost, QString & name, int r1, int g1, int b1, int r2, int g2, int b2, bool bold, bool underline, bool italics )
+bool mudlet::setTextFormat( Host * pHost, QString & name, int r1, int g1, int b1, int r2, int g2, int b2, bool bold, bool underline, bool italics, bool strikeOut )
 {
     QMap<QString, TConsole *> & dockWindowConsoleMap = mHostConsoleMap[pHost];
     if( dockWindowConsoleMap.contains( name ) )
@@ -1092,6 +1092,7 @@ bool mudlet::setTextFormat( Host * pHost, QString & name, int r1, int g1, int b1
         pC->mFormatCurrent.bold = bold;
         pC->mFormatCurrent.underline = underline;
         pC->mFormatCurrent.italics = italics;
+        pC->mFormatCurrent.strikeOut = strikeOut;
         return true;
     }
     else
@@ -1437,6 +1438,16 @@ void mudlet::setUnderline( Host * pHost, QString & name, bool b )
     {
         TConsole * pC = dockWindowConsoleMap[name];
         pC->setUnderline( b );
+    }
+}
+
+void mudlet::setStrikeOut( Host * pHost, QString & name, bool b )
+{
+    QMap<QString, TConsole *> & dockWindowConsoleMap = mHostConsoleMap[pHost];
+    if( dockWindowConsoleMap.contains( name ) )
+    {
+        TConsole * pC = dockWindowConsoleMap[name];
+        pC->setStrikeOut( b );
     }
 }
 

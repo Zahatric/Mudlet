@@ -46,11 +46,12 @@ TChar::TChar()
     italics = false;
     bold = false;
     underline = false;
+    strikeout = false;
     link = 0;
     invers = false;
 }
 
-TChar::TChar( int fR, int fG, int fB, int bR, int bG, int bB, bool b, bool i, bool u, int _link )
+TChar::TChar( int fR, int fG, int fB, int bR, int bG, int bB, bool b, bool i, bool u, bool s, int _link )
 : fgR(fR)
 , fgG(fG)
 , fgB(fB)
@@ -60,6 +61,7 @@ TChar::TChar( int fR, int fG, int fB, int bR, int bG, int bB, bool b, bool i, bo
 , italics(i)
 , bold(b)
 , underline(u)
+, strikeout(s)
 , link(_link )
 , invers( false )
 {
@@ -89,6 +91,7 @@ TChar::TChar( Host * pH )
     italics = false;
     bold = false;
     underline = false;
+    strikeout = false;
     invers = false;
     link = 0;
 }
@@ -104,6 +107,7 @@ bool TChar::operator==( const TChar & c )
     if( bold != c.bold ) return false;
     if( italics != c.italics ) return false;
     if( underline != c.underline ) return false;
+    if( strikeOut != c.strikeOut ) return false;
     if( invers != c.invers ) return false;
     if( link != c.link ) return false;
     return true;
@@ -120,6 +124,7 @@ TChar::TChar( const TChar & copy )
     italics = copy.italics;
     bold = copy.bold;
     underline = copy.underline;
+    strikeout = copy.strikeout;
     link = copy.link;
     invers = false;
 }
@@ -170,6 +175,7 @@ TBuffer::TBuffer( Host * pH )
 , mBold              ( false )
 , mItalics           ( false )
 , mUnderline         ( false )
+, mStrikeOut         ( false )
 , mFgColorCode       ( false )
 , mBgColorCode       ( false )
 {
@@ -207,6 +213,7 @@ void TBuffer::resetFontSpecs()
     mBold = false;
     mItalics = false;
     mUnderline = false;
+    mStrikeOut = false;
 }
 
 void TBuffer::updateColors()
@@ -343,6 +350,7 @@ void TBuffer::addLink( bool trigMode, QString & text, QStringList & command, QSt
                 format.bold,
                 format.italics,
                 format.underline,
+                format.strikeout,
                 mLinkID );
     }
     else
@@ -359,6 +367,7 @@ void TBuffer::addLink( bool trigMode, QString & text, QStringList & command, QSt
                     format.bold,
                     format.italics,
                     format.underline,
+                    format.strikeOut,
                     mLinkID );
     }
 }
@@ -589,7 +598,8 @@ NORMAL_ANSI_COLOR_TAG:
     case 7:
         break; //FIXME support inverse
     case 9:
-        break; //FIXME support strikethrough
+        mStrikeOut = true;
+        break; 
     case 22:
         mBold = false;
         break;
@@ -601,6 +611,9 @@ NORMAL_ANSI_COLOR_TAG:
         break;
     case 27:
         break; //FIXME inverse off
+    case 28:
+        mStrikeOut = false;
+        break; 
     case 29:
         break; //FIXME
     case 30:
@@ -1201,6 +1214,7 @@ void TBuffer::translateToPlainText( std::string & s )
                             mBold = false;
                             mItalics = false;
                             mUnderline = false;
+                            mStrikeOut = false;
                             break;
                         case 1:
                             mBold = true;
@@ -1221,6 +1235,7 @@ void TBuffer::translateToPlainText( std::string & s )
                         case 7:
                             break; //inverse
                         case 9:
+                            mStrikeOut = true;
                             break; //strikethrough
                         case 10:
                             break; //default font
@@ -1235,6 +1250,9 @@ void TBuffer::translateToPlainText( std::string & s )
                             break;
                         case 27:
                             break; //inverse off
+                        case 28:
+                            mStrikeOut = false;
+                            break; //strikethrough
                         case 29:
                             break; //not crossed out text
                         case 30:
@@ -1915,7 +1933,8 @@ void TBuffer::translateToPlainText( std::string & s )
                      bgColorB,
                      mIsDefaultColor ? mBold : false,
                      mItalics,
-                     mUnderline );
+                     mUnderline,
+                     mStrikeOut );
 
             if( mMXP_LINK_MODE )
             {
@@ -1944,7 +1963,8 @@ void TBuffer::translateToPlainText( std::string & s )
                          bgColorB,
                          mIsDefaultColor ? mBold : false,
                          mItalics,
-                         mUnderline );
+                         mUnderline,
+                         mStrikeOut );
                 mMudBuffer.push_back(tab_c);
             }
             mMudLine.append( tab );
@@ -1965,6 +1985,7 @@ void TBuffer::append( QString & text,
                       bool bold,
                       bool italics,
                       bool underline,
+                      bool strikeout,
                       int linkID )
 {
     if( static_cast<int>(buffer.size()) > mLinesLimit )
@@ -1975,7 +1996,7 @@ void TBuffer::append( QString & text,
     if( last < 0 )
     {
         std::deque<TChar> newLine;
-        TChar c(fgColorR,fgColorG,fgColorB,bgColorR,bgColorG,bgColorB,bold,italics,underline);
+        TChar c(fgColorR,fgColorG,fgColorB,bgColorR,bgColorG,bgColorB,bold,italics,underline, strikeout);
         newLine.push_back( c );
         buffer.push_back( newLine );
         lineBuffer.push_back(QString());
@@ -2047,7 +2068,7 @@ void TBuffer::append( QString & text,
             }
         }
         lineBuffer.back().append( text.at( i ) );
-        TChar c(fgColorR,fgColorG,fgColorB,bgColorR,bgColorG,bgColorB,bold,italics,underline, linkID);
+        TChar c(fgColorR,fgColorG,fgColorB,bgColorR,bgColorG,bgColorB,bold,italics,underline, strikeout, linkID);
         buffer.back().push_back( c );
         if( firstChar )
         {
@@ -2068,6 +2089,7 @@ void TBuffer::appendLine( QString & text,
                         bool bold,
                         bool italics,
                         bool underline,
+                        bool strikeout,
                         int linkID )
 {
     if( sub_end < 0 ) return;
@@ -2079,7 +2101,7 @@ void TBuffer::appendLine( QString & text,
     if( last < 0 )
     {
         std::deque<TChar> newLine;
-        TChar c(fgColorR,fgColorG,fgColorB,bgColorR,bgColorG,bgColorB,bold,italics,underline);
+        TChar c(fgColorR,fgColorG,fgColorB,bgColorR,bgColorG,bgColorB,bold,italics,underline,strikeout);
         newLine.push_back( c );
         buffer.push_back( newLine );
         lineBuffer.push_back(QString());
@@ -2096,7 +2118,7 @@ void TBuffer::appendLine( QString & text,
     for( int i=sub_start; i<=(sub_start+sub_end); i++ )
     {
         lineBuffer.back().append( text.at( i ) );
-        TChar c(fgColorR,fgColorG,fgColorB,bgColorR,bgColorG,bgColorB,bold,italics,underline, linkID);
+        TChar c(fgColorR,fgColorG,fgColorB,bgColorR,bgColorG,bgColorB,bold,italics,underline,strikeout, linkID);
         buffer.back().push_back( c );
         if( firstChar )
         {
@@ -2448,7 +2470,7 @@ void TBuffer::messen()
     }
 }*/
 
-QPoint TBuffer::insert( QPoint & where, QString text, int fgColorR, int fgColorG, int fgColorB, int bgColorR, int bgColorG, int bgColorB, bool bold, bool italics, bool underline )
+QPoint TBuffer::insert( QPoint & where, QString text, int fgColorR, int fgColorG, int fgColorB, int bgColorR, int bgColorG, int bgColorB, bool bold, bool italics, bool underline, bool strikeout)
 {
     QPoint P(-1, -1);
 
@@ -2464,7 +2486,7 @@ QPoint TBuffer::insert( QPoint & where, QString text, int fgColorR, int fgColorG
         if( text.at(i) == QChar('\n') )
         {
             std::deque<TChar> newLine;
-            TChar c(fgColorR,fgColorG,fgColorB,bgColorR,bgColorG,bgColorB,bold,italics,underline);
+            TChar c(fgColorR,fgColorG,fgColorB,bgColorR,bgColorG,bgColorB,bold,italics,underline,strikeout);
             newLine.push_back( c );
             buffer.push_back( newLine );
             promptBuffer.insert( y, false );
@@ -2479,7 +2501,7 @@ QPoint TBuffer::insert( QPoint & where, QString text, int fgColorR, int fgColorG
             continue;
         }
         lineBuffer[y].insert( x, text.at( i ) );
-        TChar c(fgColorR,fgColorG,fgColorB,bgColorR,bgColorG,bgColorB,bold,italics,underline);
+        TChar c(fgColorR,fgColorG,fgColorB,bgColorR,bgColorG,bgColorB,bold,italics,underline,strikeout);
         typedef std::deque<TChar>::iterator IT;
         IT it = buffer[y].begin();
         buffer[y].insert( it+x, c );
@@ -2518,7 +2540,7 @@ bool TBuffer::insertInLine( QPoint & P, QString & text, TChar & format )
     }
     else
     {
-        appendLine( text, 0, text.size(), format.fgR, format.fgG, format.fgB, format.bgR, format.bgG, format.bgB, format.bold, format.italics, format.underline );
+        appendLine( text, 0, text.size(), format.fgR, format.fgG, format.fgB, format.bgR, format.bgG, format.bgB, format.bold, format.italics, format.underline, format.strikeout );
     }
     return true;
 }
@@ -2553,7 +2575,8 @@ TBuffer TBuffer::copy( QPoint & P1, QPoint & P2 )
                      buffer[y][x].bgB,
                      (buffer[y][x].bold == true),
                      (buffer[y][x].italics == true),
-                     (buffer[y][x].underline == true) );
+                     (buffer[y][x].underline == true),
+                     (buffer[y][x].strikeout == true) );
         }
         return slice;
 //    TBuffer slice( mpHost );
@@ -2647,7 +2670,8 @@ void TBuffer::paste( QPoint & P, TBuffer chunk )
                    chunk.buffer[0][cx].bgB,
                    (chunk.buffer[0][cx].bold == true),
                    (chunk.buffer[0][cx].italics == true),
-                   (chunk.buffer[0][cx].underline == true) );
+                   (chunk.buffer[0][cx].underline == true)
+                   (chunk.buffer[0][cx].strikeout == true) );
         }
     }
     if( hasAppended )
@@ -2685,7 +2709,8 @@ void TBuffer::appendBuffer( TBuffer chunk )
                chunk.buffer[0][cx].bgB,
                (chunk.buffer[0][cx].bold == true),
                (chunk.buffer[0][cx].italics == true),
-               (chunk.buffer[0][cx].underline == true) );
+               (chunk.buffer[0][cx].underline == true)
+               (chunk.buffer[0][cx].strikeout == true) );
     }
     QString lf = "\n";
     append( lf,
@@ -3612,6 +3637,49 @@ bool TBuffer::applyUnderline( QPoint & P_begin, QPoint & P_end, bool bold )
         return false;
 }
 
+bool TBuffer::applyStrikeOut( QPoint & P_begin, QPoint & P_end, bool strikeout )
+{
+    int x1 = P_begin.x();
+    int x2 = P_end.x();
+    int y1 = P_begin.y();
+    int y2 = P_end.y();
+
+    if( ( x1 >= 0 )
+        && ( ( y2 < static_cast<int>(buffer.size()) )
+        && ( y2 >= 0 ) )
+        && ( ( x2 > x1 ) || ( y2 > y1 ) )
+        && ( x1 < static_cast<int>(buffer[y1].size()) ) )
+        // even if the end selection is out of bounds we still apply the format until the end of the line to simplify and ultimately speed up user scripting (no need to calc end of line)
+        // && ( x2 < static_cast<int>(buffer[y2].size()) ) )
+
+    {
+        for( int y=y1; y<=y2; y++ )
+        {
+            int x = 0;
+            if( y == y1 )
+            {
+                x = x1;
+            }
+            while( x < static_cast<int>(buffer[y].size()) )
+            {
+                if( y >= y2 )
+                {
+                    if( x >= x2 )
+                    {
+                        return true;
+                    }
+                }
+
+                buffer[y][x].strikeout = strikeout;
+                x++;
+            }
+        }
+        return true;
+    }
+    else
+        return false;
+}
+
 bool TBuffer::applyFgColor( QPoint & P_begin, QPoint & P_end, int fgColorR, int fgColorG, int fgColorB )
 {
     int x1 = P_begin.x();
@@ -3735,6 +3803,7 @@ QString TBuffer::bufferToHtml( QPoint P1, QPoint P2 )
     bool bold = false;
     bool italics = false;
     bool underline = false;
+    bool strikeout = false;
     int fgR=0;
     int fgG=0;
     int fgB=0;
@@ -3745,7 +3814,7 @@ QString TBuffer::bufferToHtml( QPoint P1, QPoint P2 )
     // - so use as initialization values
     QString fontWeight;
     QString fontStyle;
-    QString fontDecoration;
+    QString textDecoration;
     bool needChange = true;
     for( ; x<P2.x(); x++ )
     {
@@ -3760,7 +3829,8 @@ QString TBuffer::bufferToHtml( QPoint P1, QPoint P2 )
             || buffer[y][x].bgB != bgB
             || buffer[y][x].bold != bold
             || buffer[y][x].underline != underline
-            || buffer[y][x].italics != italics )
+            || buffer[y][x].italics != italics
+            || buffer[y][x].strikeout != strikeout)
         {
             needChange = false;
             fgR = buffer[y][x].fgR;
@@ -3772,6 +3842,7 @@ QString TBuffer::bufferToHtml( QPoint P1, QPoint P2 )
             bold = buffer[y][x].bold;
             italics = buffer[y][x].italics;
             underline = buffer[y][x].underline;
+            strikeout = buffer[y][x].strikeout;
             if( bold )
                 fontWeight = "bold";
             else
@@ -3780,10 +3851,15 @@ QString TBuffer::bufferToHtml( QPoint P1, QPoint P2 )
                 fontStyle = "italics";
             else
                 fontStyle = "normal";
+            //In CSS the underline and line-through are mutually exclusive.
+            //Workarounds exist but are clumsy and will be avoided. We will
+            //give underline priority.
             if( underline )
-                fontDecoration = "underline";
+                textDecoration = "underline";
+            else if ( strikeout )
+                textDecoration = "line-through"
             else
-                fontDecoration = "normal";
+                textDecoration = "normal";
             s += "</span><span style=\"";
             s += "color: rgb(" + QString::number(fgR) + ","
                                + QString::number(fgG) + ","
@@ -3793,7 +3869,7 @@ QString TBuffer::bufferToHtml( QPoint P1, QPoint P2 )
                                      + QString::number(bgB) + ");";
             s += " font-weight: " + fontWeight +
                  "; font-style: " + fontStyle +
-                 "; font-decoration: " + fontDecoration + "\">";
+                 "; text-decoration: " + textDecoration + "\">";
         }
         if( lineBuffer[y][x] == '<' )
             s.append("&lt;");
