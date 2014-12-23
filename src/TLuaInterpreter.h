@@ -327,6 +327,7 @@ public:
     static int wrapLine( lua_State * );
     static int getFgColor( lua_State * );
     static int getBgColor( lua_State * );
+    static int getProfileColor( lua_State * );
     static int tempColorTrigger( lua_State * );
     static int isAnsiFgColor( lua_State * );
     static int isAnsiBgColor( lua_State * );

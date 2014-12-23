@@ -604,6 +604,82 @@ int TLuaInterpreter::getBgColor( lua_State * L )
     return result.size();
 }
 
+int TLuaInterpreter::(getProfileColor lua_State * L )
+{
+  string luaSendText;
+  string * red = new string();
+  string * green = new string();
+  string * blue = new string();
+    if( lua_gettop( L ) != 0 )
+    {
+        if( ! lua_isstring( L, 1 ) )
+        {
+            lua_pushstring( L, "getBgColor: wrong argument type" );
+            lua_error( L );
+            return 1;
+        }
+        else
+        {
+            luaSendText = lua_tostring( L, 1 );
+
+            switch( luaSendText )
+            {
+              case "lightblack" :
+                  pHost->mFgColor.getRgb(r,g,b); 
+                  break;
+              case "black" :
+                  pHost->mBlack.getRgb(r,g,b); 
+                  break;
+              case "lightred" :
+                  pHost->mLightRed.getRgb(r,g,b); 
+                  break;
+              case "lightgreen" :
+                  pHost->mLightGreen.getRgb(r,g,b); 
+                  break;
+              case "green" :
+                  pHost->mGreen.getRgb(r,g,b); 
+                  break;
+              case "lightyellow" :
+                  pHost->mLightYellow.getRgb(r,g,b); 
+                  break;
+              case "yellow" :
+                  pHost->mYellow.getRgb(r,g,b); 
+                  break;
+              case "lightblue" :
+                  pHost->mLightBlue.getRgb(r,g,b); 
+                  break;
+              case "blue" :
+                  pHost->mBlue.getRgb(r,g,b); 
+                  break;
+              case "lightmagenta" :
+                  pHost->mLightMagenta.getRgb(r,g,b); 
+                  break;
+              case "magenta" :
+                  pHost->mMagenta.getRgb(r,g,b); 
+                  break;
+              case "lightcyan" :
+                  pHost->mLightCyan.getRgb(r,g,b); 
+                  break;
+              case "cyan" :
+                  pHost->mCyan.getRgb(r,g,b); 
+                  break;
+              case "lightwhite" :
+                  pHost->mLightWhite.getRgb(r,g,b); 
+                  break;
+              case "white" :
+                  pHost->mWhite.getRgb(r,g,b); 
+                  break;
+            };
+    }
+    else
+    {
+      //TODO Send error message
+    }
+
+    Host * pHost = TLuaInterpreter::luaInterpreterMap[L];
+    result = pHost->mpConsole->getBgColor( luaSendText );
+}
+
 int TLuaInterpreter::wrapLine( lua_State * L )
 {
     int s = 1;
