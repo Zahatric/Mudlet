@@ -607,9 +607,9 @@ int TLuaInterpreter::getBgColor( lua_State * L )
 int TLuaInterpreter::getProfileColor( lua_State * L )
 {
   string luaSendText;
-  int red = new string();
-  int green = new string();
-  int blue = new string();
+  int red;
+  int green;
+  int blue;
     if( lua_gettop( L ) != 0 )
     {
         if( ! lua_isstring( L, 1 ) )
@@ -622,54 +622,51 @@ int TLuaInterpreter::getProfileColor( lua_State * L )
         {
             luaSendText = lua_tostring( L, 1 );
 
-            switch( luaSendText )
-            {
-              case "lightblack" :
-                  pHost->mFgColor.getRgb(r,g,b); 
-                  break;
-              case "black" :
-                  pHost->mBlack.getRgb(r,g,b); 
-                  break;
-              case "lightred" :
-                  pHost->mLightRed.getRgb(r,g,b); 
-                  break;
-              case "lightgreen" :
-                  pHost->mLightGreen.getRgb(r,g,b); 
-                  break;
-              case "green" :
-                  pHost->mGreen.getRgb(r,g,b); 
-                  break;
-              case "lightyellow" :
-                  pHost->mLightYellow.getRgb(r,g,b); 
-                  break;
-              case "yellow" :
-                  pHost->mYellow.getRgb(r,g,b); 
-                  break;
-              case "lightblue" :
-                  pHost->mLightBlue.getRgb(r,g,b); 
-                  break;
-              case "blue" :
-                  pHost->mBlue.getRgb(r,g,b); 
-                  break;
-              case "lightmagenta" :
-                  pHost->mLightMagenta.getRgb(r,g,b); 
-                  break;
-              case "magenta" :
-                  pHost->mMagenta.getRgb(r,g,b); 
-                  break;
-              case "lightcyan" :
-                  pHost->mLightCyan.getRgb(r,g,b); 
-                  break;
-              case "cyan" :
-                  pHost->mCyan.getRgb(r,g,b); 
-                  break;
-              case "lightwhite" :
-                  pHost->mLightWhite.getRgb(r,g,b); 
-                  break;
-              case "white" :
-                  pHost->mWhite.getRgb(r,g,b); 
-                  break;
-            };
+              if "lightblack" {
+                  pHost->mFgColor.getRgb(red,green,blue); 
+              }
+              else if "black" {
+                  pHost->mBlack.getRgb(red,green,blue); 
+              }
+              else if "lightred" {
+                  pHost->mLightRed.getRgb(red,green,blue); 
+              }
+              else if "lightgreen" {
+                  pHost->mLightGreen.getRgb(red,green,blue); 
+              }
+              else if "green" {
+                  pHost->mGreen.getRgb(red,green,blue); 
+              }
+              else if "lightyellow" {
+                  pHost->mLightYellow.getRgb(red,green,blue); 
+              }
+              else if "yellow" {
+                  pHost->mYellow.getRgb(red,green,blue); 
+              }
+              else if "lightblue" {
+                  pHost->mLightBlue.getRgb(red,green,blue); 
+              }
+              else if "blue" {
+                  pHost->mBlue.getRgb(red,green,blue); 
+              }
+              else if "lightmagenta" {
+                  pHost->mLightMagenta.getRgb(red,green,blue); 
+              }
+              else if "magenta" {
+                  pHost->mMagenta.getRgb(red,green,blue); 
+              }
+              else if "lightcyan" {
+                  pHost->mLightCyan.getRgb(red,green,blue); 
+              }
+              else if "cyan" {
+                  pHost->mCyan.getRgb(red,green,blue); 
+              }
+              else if "lightwhite" {
+                  pHost->mLightWhite.getRgb(red,green,blue); 
+              }
+              else if "white" {
+                  pHost->mWhite.getRgb(red,green,blue); 
+              }
     }
     else
     {
