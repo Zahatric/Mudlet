@@ -604,12 +604,12 @@ int TLuaInterpreter::getBgColor( lua_State * L )
     return result.size();
 }
 
-int TLuaInterpreter::(getProfileColor lua_State * L )
+int TLuaInterpreter::getProfileColor( lua_State * L )
 {
   string luaSendText;
-  string * red = new string();
-  string * green = new string();
-  string * blue = new string();
+  int red = new string();
+  int green = new string();
+  int blue = new string();
     if( lua_gettop( L ) != 0 )
     {
         if( ! lua_isstring( L, 1 ) )
@@ -675,9 +675,29 @@ int TLuaInterpreter::(getProfileColor lua_State * L )
     {
       //TODO Send error message
     }
+    lua_newtable(L);
+    int top = lua_gettop(L);
+    string key; 
+    int value;
 
-    Host * pHost = TLuaInterpreter::luaInterpreterMap[L];
-    result = pHost->mpConsole->getBgColor( luaSendText );
+    key = "red";
+    value = red;
+    lua_pushlstring(L, key, );
+    lua_pushnumber(L, value);
+    lua_settable(L, top);
+
+    key = "green";
+    value = green;
+    lua_pushlstring(L, key, );
+    lua_pushnumber(L, value);
+    lua_settable(L, top);
+
+    key = "blue";
+    value = blue;
+    lua_pushlstring(L, key, );
+    lua_pushnumber(L, value);
+    lua_settable(L, top);
+    
 }
 
 int TLuaInterpreter::wrapLine( lua_State * L )
@@ -11055,6 +11075,7 @@ void TLuaInterpreter::initLuaGlobals()
     lua_register( pGlobalLua, "wrapLine", TLuaInterpreter::wrapLine );
     lua_register( pGlobalLua, "getFgColor", TLuaInterpreter::getFgColor );
     lua_register( pGlobalLua, "getBgColor", TLuaInterpreter::getBgColor );
+    lua_register( pGlobalLua, "getProfileColor", TLuaInterpreter::getProfileColor );
     lua_register( pGlobalLua, "tempColorTrigger", TLuaInterpreter::tempColorTrigger );
     lua_register( pGlobalLua, "isAnsiFgColor", TLuaInterpreter::isAnsiFgColor );
     lua_register( pGlobalLua, "isAnsiBgColor", TLuaInterpreter::isAnsiBgColor );
