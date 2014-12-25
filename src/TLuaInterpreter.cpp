@@ -607,9 +607,9 @@ int TLuaInterpreter::getBgColor( lua_State * L )
 int TLuaInterpreter::getProfileColor( lua_State * L )
 {
   string luaSendText;
-  int red;
-  int green;
-  int blue;
+  int * pRed = new int();
+  int * pGreen = new int();
+  int * pBlue = new int();
     if( lua_gettop( L ) != 0 )
     {
         if( ! lua_isstring( L, 1 ) )
@@ -620,53 +620,55 @@ int TLuaInterpreter::getProfileColor( lua_State * L )
         }
         else
         {
+            Host * pHost = TLuaInterpreter::luaInterpreterMap[L];
             luaSendText = lua_tostring( L, 1 );
 
-              if "lightblack" {
-                  pHost->mFgColor.getRgb(red,green,blue); 
+              if (luaSendText == "lightblack") {
+                  pHost->mFgColor.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "black" {
-                  pHost->mBlack.getRgb(red,green,blue); 
+              else if (luaSendText == "black") {
+                  pHost->mBlack.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "lightred" {
-                  pHost->mLightRed.getRgb(red,green,blue); 
+              else if (luaSendText == "lightred") {
+                  pHost->mLightRed.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "lightgreen" {
-                  pHost->mLightGreen.getRgb(red,green,blue); 
+              else if (luaSendText == "lightgreen") {
+                  pHost->mLightGreen.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "green" {
-                  pHost->mGreen.getRgb(red,green,blue); 
+              else if (luaSendText == "green") {
+                  pHost->mGreen.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "lightyellow" {
-                  pHost->mLightYellow.getRgb(red,green,blue); 
+              else if (luaSendText == "lightyellow") {
+                  pHost->mLightYellow.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "yellow" {
-                  pHost->mYellow.getRgb(red,green,blue); 
+              else if (luaSendText == "yellow") {
+                  pHost->mYellow.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "lightblue" {
-                  pHost->mLightBlue.getRgb(red,green,blue); 
+              else if (luaSendText == "lightblue") {
+                  pHost->mLightBlue.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "blue" {
-                  pHost->mBlue.getRgb(red,green,blue); 
+              else if (luaSendText == "blue") {
+                  pHost->mBlue.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "lightmagenta" {
-                  pHost->mLightMagenta.getRgb(red,green,blue); 
+              else if (luaSendText == "lightmagenta") {
+                  pHost->mLightMagenta.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "magenta" {
-                  pHost->mMagenta.getRgb(red,green,blue); 
+              else if (luaSendText == "magenta") {
+                  pHost->mMagenta.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "lightcyan" {
-                  pHost->mLightCyan.getRgb(red,green,blue); 
+              else if (luaSendText == "lightcyan") {
+                  pHost->mLightCyan.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "cyan" {
-                  pHost->mCyan.getRgb(red,green,blue); 
+              else if (luaSendText == "cyan") {
+                  pHost->mCyan.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "lightwhite" {
-                  pHost->mLightWhite.getRgb(red,green,blue); 
+              else if (luaSendText == "lightwhite") {
+                  pHost->mLightWhite.getRgb(pRed,pGreen,pBlue); 
               }
-              else if "white" {
-                  pHost->mWhite.getRgb(red,green,blue); 
+              else if (luaSendText == "white") {
+                  pHost->mWhite.getRgb(pRed,pGreen,pBlue); 
               }
+        }
     }
     else
     {
@@ -678,20 +680,20 @@ int TLuaInterpreter::getProfileColor( lua_State * L )
     int value;
 
     key = "red";
-    value = red;
-    lua_pushlstring(L, key, );
+    value = *pRed;
+    lua_pushlstring(L, key.c_str(), key.size() );
     lua_pushnumber(L, value);
     lua_settable(L, top);
 
     key = "green";
-    value = green;
-    lua_pushlstring(L, key, );
+    value = *pGreen;
+    lua_pushlstring(L, key.c_str(), key.size() );
     lua_pushnumber(L, value);
     lua_settable(L, top);
 
     key = "blue";
-    value = blue;
-    lua_pushlstring(L, key, );
+    value = *pBlue;
+    lua_pushlstring(L, key.c_str(), key.size() );
     lua_pushnumber(L, value);
     lua_settable(L, top);
     
