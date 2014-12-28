@@ -610,7 +610,9 @@ int TLuaInterpreter::getProfileColor( lua_State * L )
   int * pRed = new int();
   int * pGreen = new int();
   int * pBlue = new int();
-    if( lua_gettop( L ) != 0 )
+  QColor tempColor;
+  Host * pHost = TLuaInterpreter::luaInterpreterMap[L];
+    if( lua_gettop( L ) == 1 )
     {
         if( ! lua_isstring( L, 1 ) )
         {
@@ -620,83 +622,87 @@ int TLuaInterpreter::getProfileColor( lua_State * L )
         }
         else
         {
-            Host * pHost = TLuaInterpreter::luaInterpreterMap[L];
             luaSendText = lua_tostring( L, 1 );
 
               if (luaSendText == "lightblack") {
-                  pHost->mFgColor.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mFgColor;
               }
               else if (luaSendText == "black") {
-                  pHost->mBlack.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mBlack;
               }
               else if (luaSendText == "lightred") {
-                  pHost->mLightRed.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mLightRed;
+              }
+              else if (luaSendText == "red") {
+                  tempColor = pHost->mRed;
               }
               else if (luaSendText == "lightgreen") {
-                  pHost->mLightGreen.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mLightGreen;
               }
               else if (luaSendText == "green") {
-                  pHost->mGreen.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mGreen;
               }
               else if (luaSendText == "lightyellow") {
-                  pHost->mLightYellow.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mLightYellow;
               }
               else if (luaSendText == "yellow") {
-                  pHost->mYellow.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mYellow;
               }
               else if (luaSendText == "lightblue") {
-                  pHost->mLightBlue.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mLightBlue;
               }
               else if (luaSendText == "blue") {
-                  pHost->mBlue.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mBlue;
               }
               else if (luaSendText == "lightmagenta") {
-                  pHost->mLightMagenta.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mLightMagenta;
               }
               else if (luaSendText == "magenta") {
-                  pHost->mMagenta.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mMagenta;
               }
               else if (luaSendText == "lightcyan") {
-                  pHost->mLightCyan.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mLightCyan;
               }
               else if (luaSendText == "cyan") {
-                  pHost->mCyan.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mCyan;
               }
               else if (luaSendText == "lightwhite") {
-                  pHost->mLightWhite.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mLightWhite;
               }
               else if (luaSendText == "white") {
-                  pHost->mWhite.getRgb(pRed,pGreen,pBlue); 
+                  tempColor = pHost->mWhite;
               }
         }
     }
     else
     {
       //TODO Send error message
+      //"Too many parameters: expect string colorName"
     }
-    lua_newtable(L);
     int top = lua_gettop(L);
     string key; 
     int value;
-
+    lua_pop(L,lua_gettop(L) ) ;
     key = "red";
-    value = *pRed;
-    lua_pushlstring(L, key.c_str(), key.size() );
+    value = tempColor.red();
+    lua_newtable(L);
+    // lua_setfield(L, , 1);
+    lua_pushstring(L,key.c_str());
     lua_pushnumber(L, value);
-    lua_settable(L, top);
+    lua_settable(L, -3);
 
-    key = "green";
-    value = *pGreen;
-    lua_pushlstring(L, key.c_str(), key.size() );
-    lua_pushnumber(L, value);
-    lua_settable(L, top);
-
-    key = "blue";
-    value = *pBlue;
-    lua_pushlstring(L, key.c_str(), key.size() );
-    lua_pushnumber(L, value);
-    lua_settable(L, top);
-    
+    // key = "green";
+    // value = tempColor.green();
+    // lua_pushnumber(L, value);
+    // lua_setfield(L, -2, key.c_str());
+    // lua_settable(L, -2);
+    //
+    // key = "blue";
+    // value = tempColor.blue();
+    // lua_pushnumber(L, value);
+    // lua_setfield(L, -2, key.c_str());
+    // lua_settable(L, -2);
+    return 1;
 }
 
 int TLuaInterpreter::wrapLine( lua_State * L )
